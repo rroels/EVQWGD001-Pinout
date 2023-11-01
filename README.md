@@ -7,7 +7,7 @@ TL;DR, this is the correct pinout:
 
 <img src="images/pinout.jpg" width="500">
 
-Continue reading if you want to know why. 
+Continue reading if you want to know how this can be verified, or why it still works fine if you wired it wrong. 
 
 ## Context
 
@@ -24,10 +24,10 @@ Even when looking at existing projects (e.g. custom keyboard PCBs), I would find
 
 This left me with quite some questions:
 
-* What is the correct pinout of the EVQWGD001 rotary encoder?
-* How come people are using different wiring, yet it seems to work fine either way?
+* **Question 1** (Q1): What is the correct pinout of the EVQWGD001 rotary encoder?
+* **Question 2** (Q2): How come people are using different wiring, yet it seems to work fine either way?
 
-## Determining the pinout of the EVQWGD001
+## Q1: What is the correct pinout of the EVQWGD001? 
 
 ### Setup
 
@@ -79,7 +79,7 @@ We only saw similar results in scenario 3, where we assumed that the third pin i
 
 Thus, we can conclude that the third pin is the common pin, and the first and second pins are the "A" and "B" channel respectively. 
 
-## Why does it still work if you wire it "wrong"
+## Q2: Why does it still work if you wire it "wrong"
 
 This excellent explanation with interactive simulation has helped to answer this question:
 
