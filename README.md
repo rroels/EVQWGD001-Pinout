@@ -1,11 +1,11 @@
 # EVQWGD001 Rotary Encoder Pinout
 
 > [!NOTE]
-> Most vendors provide an incorrect pinout and as a result a lot of examples and projects have it wrong. However, even if it's wired "wrong" it will still work fine, as most libraries are able to deal with the resulting signals. 
+> Most vendors provide incorrect documentation for the EVQWGD001, and as a result a lot of examples and projects have it wrong. However, even if it's wired "wrong" it will still work fine, as most encoder libraries are able to interpret the "incorrect" signals just fine. 
 
 TL;DR, this is the correct pinout:
 
-<img src="images/pinout.jpg" width="300">
+<img src="images/pinout.jpg" width="500">
 
 Continue reading if you want to know why. 
 
@@ -13,8 +13,8 @@ Continue reading if you want to know why.
 
 I wanted to use a EVQWGD001 rotary encoder in a project. However, it was not very clear how to use it. When searching for information I found conflicting info.
 
-* https://teletype.in/@gleb.sexy/big-l
-* https://hackaday.io/page/11326-drawing-again
+* [https://teletype.in/@gleb.sexy/big-l](https://teletype.in/@gleb.sexy/big-l)
+* [https://hackaday.io/page/11326-drawing-again](https://hackaday.io/page/11326-drawing-again)
 * AliExpress vendor pages
 * ...
 
@@ -79,6 +79,46 @@ We only saw similar results in scenario 3, where we assumed that the third pin i
 
 Thus, we can conclude that the third pin is the common pin, and the first and second pins are the "A" and "B" channel respectively. 
 
+## Why does it still work if you wire it "wrong"
+
+This interactive simulation and explanation has helped to answer this question:
+
+[https://www.pjrc.com/teensy/td_libs_Encoder.html](https://www.pjrc.com/teensy/td_libs_Encoder.html)
+
+Most encoder libraries are implemented as simple state machines, where they monitor the value of the A and B channel. A typical rotation in one direction might look something like this:
+
+|   | A  | B  |
+|---|---|---|
+| State 1  | 1  | 1  |
+| State 2  | 0  | 1  |
+| State 3  | 0  | 0  |
+| State 4  | 1  | 0  |
+| State 1  | 1  | 1  |
+
+And in the other direction it might look like this:
+
+|   | A  | B  |
+|---|---|---|
+| State 1  | 1  | 1  |
+| State 4  | 1  | 0  |
+| State 3  | 0  | 0  |
+| State 2  | 0  | 1  |
+| State 1  | 1  | 1  |
+
+
+By tracking the states over time (the order in which they are encountered), the software can determine the direction of the rotation. 
+
+Some examples of how this is implemented in code:
+
+* [https://github.com/qmk/qmk_firmware/blob/master/quantum/encoder.c](https://github.com/qmk/qmk_firmware/blob/master/quantum/encoder.c)
+* [https://github.com/mathertel/RotaryEncoder/blob/master/src/RotaryEncoder.cpp](https://github.com/mathertel/RotaryEncoder/blob/master/src/RotaryEncoder.cpp)
+
+As we showed in the oscilloscope output, if the EVQWGD001 is wired wrong, the starting or ending edges of the waves align, and the fall or rise happens simultaniously. However, this is not a big problem for software that uses the state machine approach. Concretely, this just means that one of the states in the example table above is skipped if it's wired wrong, but the other states provide enough information to correctly determine the direction of the rotation. 
+
+To explain in other words, even if the square waves align on one side, one wave will still be earlier or later than the other on the other side of the wave. Based on this information, it's clear in which order the A and B channels is being triggered, and in which direction the wheel is turning.
+
+In summary, the rotary encoder is usable no matter which of the first three pins is chosen as the common pin. While it might be technically incorrect and produce different signals, it does work fine in practise due to how the software is typically implemented. 
+ 
 ## Sources
 
 * [https://howtomechatronics.com/tutorials/arduino/rotary-encoder-works-use-arduino/](https://howtomechatronics.com/tutorials/arduino/rotary-encoder-works-use-arduino/)
