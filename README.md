@@ -35,7 +35,7 @@ The goal of the experiment is to use an oscilloscope (Analog Discovery 3) to vis
 
 As the pins of the EVQWGD001 didn't play well with breadboards and dupont cables, I built a quick and dirty jig to hold the EVQWGD001. It also allowed me to easily rewire the pins and connect the oscilloscope to various points in the circuit. 
 
-I wanted to avoid using a microcontroller to keep things simple, so I added two pull-up resistors that can be connected to another pins of my choice. 
+To keep things simple I wanted to avoid using a microcontroller, so I added two pull-up resistors that simulate the microcontroller pins with internal pull-ups.
 
 <img src="images/jig1.jpg" width="300">
 
@@ -43,9 +43,9 @@ I wanted to avoid using a microcontroller to keep things simple, so I added two 
 
 ### Measurements
 
-I was then able to wire and visualise the various possible pinouts. Basically, either the first pin is the common pin, the second pin is the common pin or the third pin is the common pin. 
+I was then able to wire and visualise the various possible pinouts. Basically, either the first pin is the common pin, the second pin is the common pin or the third pin is the common pin. The remaining two pins are always assumed to be channel A and B. 
 
-For each of these three scenarios, I made small recording on the oscilloscope which contained one scroll up and one scroll down. This is what it looks like:
+For each of these three scenarios, I made a small recording on the oscilloscope, which contained one scroll up and one scroll down. This is what it looks like for each scenario.
 
 <hr>
 
@@ -65,7 +65,7 @@ Assumption: the third pin is the common pin
 
 <img src="images/common_last.png" width="500">
 
-### Conclusion
+### Pinout Conclusion
 
 As you can see, in the first two scenarios where we assume either the first or second pin is the common pin, it doesn't look like the signal one would expect from a rotary encoder. One of the channel's square waves is always aligned with the start or end of the other channel's square waves. 
 
@@ -81,7 +81,7 @@ Thus, we can conclude that the third pin is the common pin, and the first and se
 
 ## Why does it still work if you wire it "wrong"
 
-This interactive simulation and explanation has helped to answer this question:
+This excellent explanation with interactive simulation has helped to answer this question:
 
 [https://www.pjrc.com/teensy/td_libs_Encoder.html](https://www.pjrc.com/teensy/td_libs_Encoder.html)
 
@@ -113,7 +113,7 @@ Some examples of how this is implemented in code:
 * [https://github.com/qmk/qmk_firmware/blob/master/quantum/encoder.c](https://github.com/qmk/qmk_firmware/blob/master/quantum/encoder.c)
 * [https://github.com/mathertel/RotaryEncoder/blob/master/src/RotaryEncoder.cpp](https://github.com/mathertel/RotaryEncoder/blob/master/src/RotaryEncoder.cpp)
 
-As we showed in the oscilloscope output, if the EVQWGD001 is wired wrong, the starting or ending edges of the waves align, and the fall or rise happens simultaniously. However, this is not a big problem for software that uses the state machine approach. Concretely, this just means that one of the states in the example table above is skipped if it's wired wrong, but the other states provide enough information to correctly determine the direction of the rotation. 
+As we showed in the oscilloscope output, if the EVQWGD001 is wired wrong, the starting or ending edges of the waves align, and the fall or rise happens simultaneously. However, this is not a big problem for software that uses the state machine approach. Concretely, this just means that one of the states in the example table above is skipped if it's wired wrong, but the other states provide enough information to correctly determine the direction of the rotation. 
 
 To explain in other words, even if the square waves align on one side, one wave will still be earlier or later than the other on the other side of the wave. Based on this information, it's clear in which order the A and B channels is being triggered, and in which direction the wheel is turning.
 
