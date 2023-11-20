@@ -115,7 +115,7 @@ Some examples of how this is implemented in code:
 
 As we showed in the oscilloscope output, if the EVQWGD001 is wired wrong, the starting or ending edges of the waves align, and the fall or rise happens simultaneously. However, this is not a big problem for software that uses the state machine approach. Concretely, this just means that one of the states in the example table above is skipped if it's wired wrong, but the other states provide enough information to correctly determine the direction of the rotation. 
 
-To explain in other words, even if the square waves align on one side, one wave will still be earlier or later than the other on the other side of the wave. Based on this information, it's clear in which order the A and B channels is being triggered, and in which direction the wheel is turning.
+To explain in other words, even if the square waves align on one side, one wave will still be earlier or later than the other on the other side of the wave. Based on this information, it's clear in which order the A and B channels are being triggered, and in which direction the wheel is turning.
 
 In summary, the rotary encoder is usable no matter which of the first three pins is chosen as the common pin. While it might be technically incorrect and produce different signals, it does work fine in practise due to how the software is typically implemented. 
  
